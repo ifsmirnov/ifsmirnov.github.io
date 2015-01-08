@@ -1,0 +1,27 @@
+// .a { background: green }
+// .b { background: yellow }
+// .c { background: red }
+// .d { background: brown }
+.h10 { height: 10% }
+.h20 { height: 20% }
+.h50 { height: 50% }
+.h60 { height: 60% }
+.h80 { height: 80% }
+.h90 { height: 90% }
+.w5 { width: 5% }
+.lang {
+    padding-bottom: 1px;
+    border-style: solid;
+    border-width: 1px;
+    margin-bottom: 2px }
+.langgroup {
+  padding: 2 4 2 4;
+  border-style: solid;
+  border-width: 1px;
+  overflow: hidden;
+  overflow-y: scroll;
+  width: 16%;
+  position: absolute;
+  min-height: 70%;
+  max-height: 70%;
+}
