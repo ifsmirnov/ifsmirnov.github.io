@@ -5,12 +5,12 @@ var api = {
 };
 
 var dirs;
+var langs;
 
-// CPS; k -- continuation
-function translate(text, lang_from, lang_to, k) {
+function translate(text, lang_from, lang_to, callback) {
   console.log(text + " " + lang_from + " " + lang_to);
   if (lang_from == lang_to) {
-    k(text);
+    callback(text);
     return;
   }
   if (-1 != $.inArray(lang_from + "-" + lang_to, dirs)) {
@@ -22,20 +22,28 @@ function translate(text, lang_from, lang_to, k) {
         text: text
       },
       function(data) {
-        k(data.text[0]);
+        callback(data.text[0]);
       }
     );
   } else {
     $.each(["ru"], function(idx, val) {
       var mid = val;
       translate(text, lang_from, mid, function(data) {
-        translate(data, mid, lang_to, k);
+        translate(data, mid, lang_to, callback);
       });
     });
   }
 }
 
+function randomText(callback) {
+
+}
+
+// add lang div to selected_langs block
 function addSelected(lang_id, lang_name) {
+  if (!lang_name) {
+    lang_name = langNames[lang_id];
+  }
   $("<div/>", { "class": "lang", html: lang_name })
     .appendTo($("#selected_langs"))
     .data("lang", lang_id)
@@ -44,8 +52,16 @@ function addSelected(lang_id, lang_name) {
     });
 }
 
+function randomLang() {
+  if (0 == langs.length) {
+    return "";
+  }
+  return langs[rand() % langs.length];
+}
+
+// read all languages from %langs% and add appropriate of them
+// to ::langs and to avail_langs block
 function addLangs(langs) {
-//         accepted = [ "ru", "en", "tr", "fr", "de", "es" ];
   var dirsSet = {};
   $.each(dirs, function(idx, val) {
     dirsSet[val] = true;
@@ -53,7 +69,6 @@ function addLangs(langs) {
 
   for (lang in langs) {
     var good = false;
-
     $.each(["ru"], function(idx, val) { // extendable to several mid values
       var mid = val;  
       if (mid == lang || (dirsSet[lang + "-" + mid] && dirsSet[mid + "-" + lang])) {
@@ -64,6 +79,7 @@ function addLangs(langs) {
     if (!good) {
       continue;
     }
+    window.langs.push(lang);
     $("<div/>", { "class": "lang", id: lang, html: langs[lang]})
       .appendTo($("#avail_langs"))
       .click(function(event) {
@@ -74,6 +90,7 @@ function addLangs(langs) {
   }
 }
 
+// list of currently selected languages
 function selectedList() {
   res = []
   $("#selected_langs .lang").each(function() {
@@ -93,6 +110,8 @@ function loadDirs() {
   );
 }
 
+// translate text from text_in using language list
+// and asyncronously put the result in text_out
 function translateAll(text) {
   lang_list = selectedList();
   if (lang_list.length < 2) {
@@ -118,7 +137,11 @@ function translateAll(text) {
 
 $(document).ready(function() {
   loadDirs();
-  $("input").click(function(event) {
+  $("#translate").click(function(event) {
+    translateAll($("#text_in").val());
+  });
+  $("#random_text").click(function(event) {
+    randomText
     translateAll($("#text_in").val());
   });
 
