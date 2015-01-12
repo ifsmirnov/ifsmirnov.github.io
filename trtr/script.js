@@ -5,7 +5,7 @@ var api = {
 };
 
 var dirs;
-var langs;
+var langs = [];
 
 function translate(text, lang_from, lang_to, callback) {
   console.log(text + " " + lang_from + " " + lang_to);
@@ -140,10 +140,9 @@ $(document).ready(function() {
   $("#translate").click(function(event) {
     translateAll($("#text_in").val());
   });
-  $("#random_text").click(function(event) {
-    randomText
-    translateAll($("#text_in").val());
-  });
+  //$("#random_text").click(function(event) {
+    //translateAll($("#text_in").val());
+  //});
 
   addSelected("ru", "Русский");
   addSelected("es", "Испанский");
